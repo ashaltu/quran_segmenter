@@ -35,7 +35,7 @@ class LafzizeProcessor:
     
     def ensure_server(self) -> bool:
         """Ensure lafzize server is running."""
-        return self.server.ensure_running()
+        return self.server.is_running()
     
     def process(
         self,
