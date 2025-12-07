@@ -101,7 +101,8 @@ def cmd_process(args):
             verses=args.verses,
             translation_id=args.translation,
             output_path=Path(args.output) if args.output else None,
-            use_cache=not args.no_cache
+            use_cache=not args.no_cache,
+            start_server=args.start_server
         )
         
         print(f"\n✓ Processed {len(result.verses)} verses")
@@ -206,6 +207,7 @@ def main():
     p_process.add_argument("translation", help="Translation ID")
     p_process.add_argument("-o", "--output", help="Output file path")
     p_process.add_argument("--no-cache", action="store_true", help="Disable caching")
+    p_process.add_argument("--start-server", action="store_true", help="Start lafzize server if not running")
     p_process.set_defaults(func=cmd_process)
     
     # status

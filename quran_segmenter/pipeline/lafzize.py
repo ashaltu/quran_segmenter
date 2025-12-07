@@ -41,7 +41,8 @@ class LafzizeProcessor:
         self,
         audio_path: Path,
         verse_range: VerseRange,
-        use_cache: bool = True
+        use_cache: bool = True,
+        start_server: bool = False
     ) -> List[WordTimestamp]:
         """
         Get word timestamps for audio file.
@@ -63,6 +64,10 @@ class LafzizeProcessor:
                 logger.info(f"Using cached timestamps for {verse_range_str}")
                 return [WordTimestamp.from_dict(t) for t in cached]
         
+        # Start server if needed
+        if start_server:
+            self.server.start()
+
         # Ensure server is running
         if not self.ensure_server():
             raise ServerNotRunningError("Could not start lafzize server")

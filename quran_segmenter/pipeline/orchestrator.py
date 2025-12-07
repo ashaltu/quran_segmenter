@@ -252,7 +252,8 @@ class QuranSegmenterPipeline:
         timestamps = self.lafzize.process(
             audio_path=audio_path,
             verse_range=verse_range,
-            use_cache=use_cache
+            use_cache=use_cache,
+            start_server=True
         )
         
         # Step 2: Get alignment
