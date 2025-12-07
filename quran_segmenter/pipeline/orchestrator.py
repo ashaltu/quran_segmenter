@@ -193,7 +193,7 @@ class QuranSegmenterPipeline:
         
         # Step 3: Segment embeddings
         tc = self.config.get_translation(translation_id)  # Refresh
-        if tc.embeddings_path and tc.embeddings_path.exists() and not force:
+        if tc.embeddings_path and Path(tc.embeddings_path).exists() and not force:
             logger.info(f"Segment embeddings already exist for {translation_id}")
             status["steps"]["segment_embeddings"] = "already_done"
         else:
