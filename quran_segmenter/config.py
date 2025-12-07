@@ -179,7 +179,8 @@ class Config:
             "jumlize": self.jumlize.to_dict(),
             "rabtize": self.rabtize.to_dict(),
             "translations": {k: v.to_dict() for k, v in self.translations.items()},
-            "spans_embeddings_generated": self.spans_embeddings_generated
+            "spans_embeddings_generated": self.spans_embeddings_generated,
+            "spans_embeddings_path": str(self.spans_embeddings_path)
         }
     
     def _update_from_dict(self, data: dict):
@@ -269,7 +270,9 @@ class Config:
         name: str,
         language_code: str,
         source_file: Path,
-        copy_to_data_dir: bool = True
+        copy_to_data_dir: bool = True,
+        spans_embeddings_filepath: Optional[Path] = None,
+        segment_embeddings_filepath: Optional[Path] = None
     ) -> TranslationConfig:
         """Register a new translation."""
         source_file = Path(source_file)
@@ -291,7 +294,7 @@ class Config:
             id=translation_id,
             name=name,
             language_code=language_code,
-            file_path=file_path
+            file_path=file_path,
         )
         
         # Check if already segmented (file has segments)
@@ -301,6 +304,15 @@ class Config:
         emb_path = self.embeddings_dir / f"{translation_id}.npz"
         if emb_path.exists():
             tc.embeddings_path = str(emb_path)
+
+        # If provided, set embeddings paths
+        if segment_embeddings_filepath:
+            tc.embeddings_path = str(segment_embeddings_filepath)
+
+        # If provided, set spans embeddings (one-time) for the config
+        if spans_embeddings_filepath and spans_embeddings_filepath.exists():
+            self.spans_embeddings_generated = True
+            self.spans_embeddings_path = spans_embeddings_filepath
         
         self.translations[translation_id] = tc
         self.save()

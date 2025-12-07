@@ -86,7 +86,9 @@ class QuranSegmenterPipeline:
         translation_id: str,
         name: str,
         language_code: str,
-        source_file: Path
+        source_file: Path,
+        spans_embeddings_filepath: Optional[Path] = None,
+        segment_embeddings_filepath: Optional[Path] = None
     ) -> None:
         """Register a new translation for processing."""
         self.config.register_translation(
@@ -94,7 +96,9 @@ class QuranSegmenterPipeline:
             name=name,
             language_code=language_code,
             source_file=source_file,
-            copy_to_data_dir=True
+            copy_to_data_dir=True,
+            spans_embeddings_filepath=spans_embeddings_filepath,
+            segment_embeddings_filepath=segment_embeddings_filepath
         )
         logger.info(f"Registered translation: {translation_id}")
     
@@ -123,6 +127,7 @@ class QuranSegmenterPipeline:
         translation_id: str,
         api_key: Optional[str] = None,
         skip_segmentation: bool = False,
+        skip_embeddings: bool = False,
         force: bool = False
     ) -> Dict[str, Any]:
         """
@@ -130,13 +135,14 @@ class QuranSegmenterPipeline:
         
         This runs:
         1. Jumlize segmentation (if not done, uses LLM)
-        2. Spans embeddings (if not done, one-time)
-        3. Segment embeddings (if not done)
+        2. Spans embeddings (if not done, one-time reused for any translation)
+        3. Segment embeddings (if not done, one-time per translation)
         
         Args:
             translation_id: ID of registered translation
             api_key: Gemini API key for jumlize (if needed)
             skip_segmentation: Skip jumlize if translation is pre-segmented
+            skip_embeddings: Skip all embedding generation steps
             force: Force re-run of all steps
             
         Returns:
@@ -170,7 +176,10 @@ class QuranSegmenterPipeline:
                 raise
         
         # Step 2: Spans embeddings (global, one-time)
-        if self.config.spans_embeddings_generated and not force:
+        if skip_embeddings:
+            logger.info("Skipping spans embeddings generation")
+            status["steps"]["spans_embeddings"] = "skipped"
+        elif self.config.spans_embeddings_generated and not force:
             logger.info("Spans embeddings already exist")
             status["steps"]["spans_embeddings"] = "already_done"
         else:

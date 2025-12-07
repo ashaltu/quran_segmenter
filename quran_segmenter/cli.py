@@ -42,7 +42,9 @@ def cmd_register(args):
         translation_id=args.id,
         name=args.name,
         language_code=args.language,
-        source_file=Path(args.file)
+        source_file=Path(args.file),
+        spans_embeddings_filepath=Path(args.spans_embeddings_filepath) if args.spans_embeddings_filepath else None,
+        segment_embeddings_filepath=Path(args.segment_embeddings_filepath) if args.segment_embeddings_filepath else None
     )
     print(f"Registered translation: {args.id}")
 
@@ -74,6 +76,7 @@ def cmd_prepare(args):
             translation_id=args.translation,
             api_key=args.api_key,
             skip_segmentation=args.skip_segmentation,
+            skip_embeddings=args.skip_embeddings,
             force=args.force
         )
         
@@ -178,6 +181,8 @@ def main():
     p_register.add_argument("file", help="Path to translation JSON file")
     p_register.add_argument("--name", required=True, help="Display name")
     p_register.add_argument("--language", required=True, help="Language code (e.g., en)")
+    p_register.add_argument("--spans-embeddings-filepath", required=False, help="Path to spans embeddings file")
+    p_register.add_argument("--segment-embeddings-filepath", required=False, help="Path to segment embeddings file")
     p_register.set_defaults(func=cmd_register)
     
     # list
@@ -190,6 +195,7 @@ def main():
     p_prepare.add_argument("--api-key", help="Gemini API key for segmentation")
     p_prepare.add_argument("--skip-segmentation", action="store_true",
                           help="Skip jumlize (for pre-segmented translations)")
+    p_prepare.add_argument("--skip-embeddings", action="store_true",)
     p_prepare.add_argument("--force", action="store_true", help="Force re-run all steps")
     p_prepare.set_defaults(func=cmd_prepare)
     
