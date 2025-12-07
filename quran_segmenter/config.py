@@ -156,6 +156,7 @@ class Config:
         # State
         self.translations: Dict[str, TranslationConfig] = {}
         self.spans_embeddings_generated: bool = False
+        self._spans_embeddings_path = None
         
         # Create directories
         for d in [self.translations_dir, self.embeddings_dir, self.cache_dir]:
@@ -164,6 +165,10 @@ class Config:
     @property
     def spans_embeddings_path(self) -> Path:
         return self.embeddings_dir / "spans.npz"
+    
+    @spans_embeddings_path.setter
+    def spans_embeddings_path(self, value: Path):
+        self._spans_embeddings_path = Path(value)
     
     def to_dict(self) -> dict:
         """Serialize to dictionary."""
