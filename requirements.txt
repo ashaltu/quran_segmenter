@@ -1,0 +1,8 @@
+requests>=2.28.0
+backoff>=2.0.0
+
+# For local development with full pipeline:
+# torch
+# sentence-transformers
+# fastapi
+# uvicorn

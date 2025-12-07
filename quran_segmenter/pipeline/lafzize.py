@@ -10,7 +10,7 @@ import logging
 
 from ..config import Config
 from ..models import VerseRange, WordTimestamp
-from ..utils.server import ServerManager
+from ..utils.server import LafzizeServer
 from ..utils.cache import CacheManager
 from ..exceptions import LafzizeError, ServerNotRunningError
 
@@ -23,7 +23,7 @@ class LafzizeProcessor:
     def __init__(self, config: Config, cache: CacheManager):
         self.config = config
         self.cache = cache
-        self.server = ServerManager(
+        self.server = LafzizeServer(
             lafzize_dir=config.lafzize_dir,
             host=config.lafzize.server_host,
             port=config.lafzize.server_port
