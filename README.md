@@ -24,8 +24,8 @@ A production-grade tool for generating timed subtitle segments for Quran video r
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourname/quran-segmenter.git
-cd quran-segmenter
+git clone https://github.com/ashaltu/quran_segmenter.git
+cd quran_segmenter
 
 # Install the package
 pip install -e .
