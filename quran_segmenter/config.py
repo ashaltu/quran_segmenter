@@ -377,7 +377,7 @@ class Config:
         updated = False
         
         # Check spans embeddings
-        if self.spans_embeddings_path.exists() and not self.spans_embeddings_generated:
+        if self.spans_embeddings_path and self.spans_embeddings_path.exists() and not self.spans_embeddings_generated:
             self.spans_embeddings_generated = True
             updated = True
             logger.info("Found existing spans embeddings")

@@ -195,7 +195,7 @@ def main():
     p_prepare.add_argument("--api-key", help="Gemini API key for segmentation")
     p_prepare.add_argument("--skip-segmentation", action="store_true",
                           help="Skip jumlize (for pre-segmented translations)")
-    p_prepare.add_argument("--skip-embeddings", action="store_true",)
+    p_prepare.add_argument("--skip-embeddings", action="store_true", help="Skip all embedding generation steps")
     p_prepare.add_argument("--force", action="store_true", help="Force re-run all steps")
     p_prepare.set_defaults(func=cmd_prepare)
     
