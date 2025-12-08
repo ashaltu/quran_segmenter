@@ -13,37 +13,11 @@ A production-grade tool for generating timed subtitle segments for Quran video r
 
 ## Quick Start
 
-### Option 1: Google Colab (Recommended for beginners)
+Open the Colab notebook and run it there: [quran_segmenter_colab.ipynb](notebooks/quran_segmenter_colab.ipynb). Upload at least these three files before running the processing cells:
 
-1. Open the notebook: [quran_segmenter_colab.ipynb](notebooks/quran_segmenter_colab.ipynb)
-2. Run **Cell 1** to install dependencies (~10 minutes first time)
-3. Run **Cell 2** to mount Google Drive and initialize
-4. Follow the cells in order
-
-### Option 2: Local Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/ashaltu/quran_segmenter.git
-cd quran_segmenter
-
-# Install the package
-pip install -e .
-
-# Initialize project
-quran-segmenter init --data-dir ./quran_data
-
-# Register a translation
-quran-segmenter register en-sahih ./translations/en-sahih.json \
-    --name "Sahih International" --language en
-
-# Prepare translation (one-time)
-export GEMINI_API_KEY=your_key
-quran-segmenter prepare en-sahih
-
-# Process audio
-quran-segmenter process audio.mp3 "2:282" en-sahih -o output.json
-```
+- [`qpc-hafs-word-by-word.json`](https://qul.tarteel.ai/resources/quran-script/312) (words)
+- [`quran-metadata-misc.json`](https://git.sr.ht/~rehandaphedar/quranic-universal-library-extras/blob/main/quran-metadata-misc.json) (metadata)
+- Your recitation audio as an `.mp3` (found in the reciter JSONs downloadable from https://qul.tarteel.ai/resources/recitation)
 
 ## Required Files
 
@@ -61,12 +35,13 @@ Before using the tool, you need these data files:
 
 The tool accepts these verse formats:
 
-| Format        | Example      | Description                     |
-|---------------|--------------|---------------------------------|
-| Single verse  | `2:282`      | Surah 2, verse 282              |
-| Verse range   | `2:255-260`  | Surah 2, verses 255–260         |
-| Full surah    | `2`          | All 286 verses of Surah 2       |
-| First N verses| `2:1-10`     | First 10 verses of Surah 2      |
+| Format         | Example                   | Description                                                                      |
+|----------------|---------------------------|----------------------------------------------------------------------------------|
+| Single verse   | `2:282`                   | Surah 2, verse 282                                                               |
+| Verse range    | `2:255-260`               | Surah 2, verses 255–260                                                          |
+| Full surah     | `2`                       | All 286 verses of Surah 2                                                        |
+| First N verses | `2:1-10`                  | First 10 verses of Surah 2                                                       |
+| Preface phrases| `taawwudh+basmalah+2:1-5` | Prepend taawwudh and/or basmalah before the verses (also works for full surahs)  |
 
 **Note:** Cross-surah ranges (e.g., `2:286-3:5`) are **not** supported.
 
