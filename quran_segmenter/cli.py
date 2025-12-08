@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Optional
 
 from .config import Config, get_config
+from .colab_setup import setup_colab
 from .pipeline.orchestrator import QuranSegmenterPipeline
 from .exceptions import QuranSegmenterError
 
@@ -160,6 +161,20 @@ def cmd_clear_cache(args):
     print(f"Cache cleared: {args.category or 'all'}")
 
 
+def cmd_setup_colab(args):
+    """Run one-shot Colab bootstrap (installs deps and wires env)."""
+    setup_colab(
+        words_path=args.words,
+        metadata_path=args.metadata,
+        config_path=args.config,
+        base_dir=args.base_dir,
+        rabtize_repo=args.rabtize_repo,
+        lafzize_repo=args.lafzize_repo,
+        go_url=args.go_url,
+        jumlize_ref=args.jumlize_ref,
+    )
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -220,6 +235,22 @@ def main():
     p_cache.add_argument("--category", choices=["timestamps", "alignments"],
                         help="Category to clear (default: all)")
     p_cache.set_defaults(func=cmd_clear_cache)
+    
+    # setup-colab
+    p_colab = subparsers.add_parser("setup-colab", help="One-shot Colab bootstrap")
+    p_colab.add_argument("--words", required=True, help="Path to qpc-hafs-word-by-word.json")
+    p_colab.add_argument("--metadata", required=True, help="Path to quran-metadata-misc.json")
+    p_colab.add_argument("--config", default="./quran_data/config.json", help="Path to config JSON")
+    p_colab.add_argument("--base-dir", default=".", help="Base directory for cloned deps")
+    p_colab.add_argument("--rabtize-repo", default="https://git.sr.ht/~rehandaphedar/rabtize",
+                         help="rabtize repo URL")
+    p_colab.add_argument("--lafzize-repo", default="https://git.sr.ht/~rehandaphedar/lafzize",
+                         help="lafzize repo URL")
+    p_colab.add_argument("--go-url", default="https://go.dev/dl/go1.25.5.linux-amd64.tar.gz",
+                         help="Go tarball URL for Colab")
+    p_colab.add_argument("--jumlize-ref", default="git.sr.ht/~rehandaphedar/jumlize/v3@latest",
+                         help="jumlize go install ref")
+    p_colab.set_defaults(func=cmd_setup_colab)
     
     args = parser.parse_args()
     

@@ -13,7 +13,7 @@ A production-grade tool for generating timed subtitle segments for Quran video r
 
 ## Quick Start
 
-Open the Colab notebook and run it there: [quran_segmenter_colab.ipynb](notebooks/quran_segmenter_colab.ipynb). Upload at least these three files before running the processing cells:
+Open the Colab notebook and run it there: [quran_segmenter_colab.ipynb](notebooks/quran_segmenter_colab.ipynb). Upload at least these three files before running the processing cells; the first cell will install dependencies via `quran-segmenter setup-colab`:
 
 - [`qpc-hafs-word-by-word.json`](https://qul.tarteel.ai/resources/quran-script/312) (words)
 - [`quran-metadata-misc.json`](https://git.sr.ht/~rehandaphedar/quranic-universal-library-extras/blob/main/quran-metadata-misc.json) (metadata)
