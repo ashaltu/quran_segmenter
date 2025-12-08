@@ -1,1 +1,29 @@
 .DS_Store
+
+# Bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build/dist artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE and tooling
+.idea/
+.vscode/
+
+# Coverage and test artifacts
+.coverage
+htmlcov/
+coverage.xml
+
+# Local data/output
+*.log
+*.tmp
