@@ -32,7 +32,12 @@ def load_quran_metadata(path: Path) -> QuranMetadata:
     """Load Quran metadata from file or use defaults."""
     if path.exists():
         try:
-            return QuranMetadata.load(path)
+            meta = QuranMetadata.load(path)
+            # Fill missing surahs with fallback counts
+            for s, count in SURAH_VERSE_COUNTS.items():
+                if s not in meta.surah_verse_counts:
+                    meta.surah_verse_counts[s] = count
+            return meta
         except Exception as e:
             logger.warning(f"Failed to load metadata from {path}: {e}")
     
