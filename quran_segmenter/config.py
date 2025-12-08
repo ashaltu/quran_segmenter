@@ -423,5 +423,5 @@ class Config:
 
 def get_config() -> Config:
     """Get the global configuration instance."""
-    config_path = Path(os.environ.get("QURAN_SEGMENTER_CONFIG", "./data/config.json"))
+    config_path = Path(os.environ.get("QURAN_SEGMENTER_CONFIG", "./quran_data/config.json"))
     return Config.load_or_create(config_path)
