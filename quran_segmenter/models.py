@@ -9,22 +9,42 @@ from pathlib import Path
 
 @dataclass
 class VerseRange:
-    """Represents a range of verses within a single surah."""
+    """Represents a range of verses within a single surah (optionally with preface phrases)."""
     surah: int
     start_verse: int
     end_verse: int
+    include_basmalah: bool = False
+    include_taawwudh: bool = False
     
     def __str__(self) -> str:
-        if self.start_verse == self.end_verse:
-            return f"{self.surah}:{self.start_verse}"
-        return f"{self.surah}:{self.start_verse}-{self.end_verse}"
+        base = f"{self.surah}:{self.start_verse}" if self.start_verse == self.end_verse else f"{self.surah}:{self.start_verse}-{self.end_verse}"
+        prefixes = []
+        if self.include_taawwudh:
+            prefixes.append("taawwudh")
+        if self.include_basmalah:
+            prefixes.append("basmalah")
+        return "+".join(prefixes + [base]) if prefixes else base
     
     def to_lafzize_format(self) -> str:
-        """Format for lafzize API."""
-        return f"{self.surah}:{self.start_verse},{self.surah}:{self.end_verse}"
+        """
+        Format for lafzize API (flattened).
+        For multi-segment requests this is a comma-joined view of `to_lafzize_segments()`.
+        """
+        segments = self.to_lafzize_segments()
+        return ",".join(segments)
+    
+    def to_lafzize_segments(self) -> List[str]:
+        """Segments list for lafzize API (preserves ordering)."""
+        segments = []
+        if self.include_taawwudh:
+            segments.append("taawwudh")
+        if self.include_basmalah:
+            segments.append("basmalah")
+        segments.append(f"{self.surah}:{self.start_verse},{self.surah}:{self.end_verse}")
+        return segments
     
     def verse_keys(self) -> List[str]:
-        """Get all verse keys in this range."""
+        """Get all verse keys in this range (phrases excluded)."""
         return [f"{self.surah}:{v}" for v in range(self.start_verse, self.end_verse + 1)]
     
     @classmethod

@@ -78,7 +78,7 @@ class LafzizeProcessor:
         try:
             with open(audio_path, "rb") as f:
                 files = {"audio": (audio_path.name, f, "audio/mpeg")}
-                data = {"segments": verse_range.to_lafzize_format()}
+                data = [("segments", s) for s in verse_range.to_lafzize_segments()]
                 
                 response = requests.post(
                     self.api_url,

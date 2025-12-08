@@ -50,20 +50,41 @@ def parse_verse_spec(
       - "2:282" -> single verse
       - "2:1-5" -> verse range within surah
       - "2" -> entire surah (requires metadata)
+      - "taawwudh+2:1-5" -> prepend taawwudh segment
+      - "taawwudh+basmalah+2:1-5" -> prepend taawwudh and basmalah
       - "2:255,2:282" -> NOT supported (multiple non-contiguous)
     """
     spec = spec.strip()
+    include_taawwudh = False
+    include_basmalah = False
+    
+    # Extract optional prefix phrases
+    if "+" in spec:
+        parts = [p.strip() for p in spec.split("+") if p.strip()]
+        if not parts:
+            raise ValueError("Empty verse spec")
+        base_spec = parts[-1]
+        for prefix in parts[:-1]:
+            key = prefix.lower()
+            if key == "taawwudh":
+                include_taawwudh = True
+            elif key == "basmalah":
+                include_basmalah = True
+            else:
+                raise ValueError(f"Unknown prefix '{prefix}' in verse spec '{spec}'")
+    else:
+        base_spec = spec
     
     # Check for unsupported formats
-    if "," in spec and spec.count(":") > 1:
+    if "," in base_spec and base_spec.count(":") > 1:
         raise ValueError(
             f"Non-contiguous verse ranges not supported: '{spec}'. "
             "Process each range separately."
         )
     
-    if ":" not in spec:
+    if ":" not in base_spec:
         # Full surah
-        surah = int(spec)
+        surah = int(base_spec)
         if metadata:
             verse_count = metadata.get_verse_count(surah)
         elif surah in SURAH_VERSE_COUNTS:
@@ -71,9 +92,18 @@ def parse_verse_spec(
         else:
             raise ValueError(f"Unknown surah {surah} and no metadata provided")
         
-        return VerseRange(surah=surah, start_verse=1, end_verse=verse_count)
+        return VerseRange(
+            surah=surah,
+            start_verse=1,
+            end_verse=verse_count,
+            include_basmalah=include_basmalah,
+            include_taawwudh=include_taawwudh
+        )
     
-    return VerseRange.parse(spec)
+    vr = VerseRange.parse(base_spec)
+    vr.include_basmalah = include_basmalah
+    vr.include_taawwudh = include_taawwudh
+    return vr
 
 
 def validate_verse_range(vr: VerseRange, metadata: QuranMetadata = None) -> Tuple[bool, str]:
