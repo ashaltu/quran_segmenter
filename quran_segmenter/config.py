@@ -12,6 +12,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def _resolve_path(path: Path, base: Path) -> Path:
+    """Resolve path to absolute using base when relative."""
+    path = Path(path).expanduser()
+    if not path.is_absolute():
+        path = (base / path).resolve()
+    return path
+
+
 @dataclass
 class TranslationConfig:
     """Configuration for a single translation."""
@@ -131,8 +139,9 @@ class Config:
         base_dir: Optional[Path] = None,
         storage_manager=None
     ):
-        self.data_dir = Path(data_dir)
-        self.base_dir = Path(base_dir) if base_dir else Path.cwd()
+        self.base_dir = Path(base_dir).expanduser().resolve() if base_dir else Path.cwd().resolve()
+        data_dir = _resolve_path(data_dir, self.base_dir)
+        self.data_dir = data_dir
         self._storage = storage_manager
         
         # Derived paths
@@ -164,11 +173,13 @@ class Config:
     
     @property
     def spans_embeddings_path(self) -> Path:
+        if self._spans_embeddings_path:
+            return _resolve_path(self._spans_embeddings_path, self.base_dir)
         return self.embeddings_dir / "spans.npz"
     
     @spans_embeddings_path.setter
     def spans_embeddings_path(self, value: Path):
-        self._spans_embeddings_path = Path(value)
+        self._spans_embeddings_path = _resolve_path(value, self.base_dir)
     
     def to_dict(self) -> dict:
         """Serialize to dictionary."""
@@ -191,15 +202,17 @@ class Config:
     def _update_from_dict(self, data: dict):
         """Update config from dictionary."""
         if "lafzize_dir" in data:
-            self.lafzize_dir = Path(data["lafzize_dir"])
+            self.lafzize_dir = _resolve_path(data["lafzize_dir"], self.base_dir)
         if "rabtize_dir" in data:
-            self.rabtize_dir = Path(data["rabtize_dir"])
+            self.rabtize_dir = _resolve_path(data["rabtize_dir"], self.base_dir)
         if "jumlize_binary" in data:
-            self.jumlize_binary = Path(data["jumlize_binary"])
+            self.jumlize_binary = _resolve_path(data["jumlize_binary"], self.base_dir)
         if "qpc_words_file" in data:
-            self.qpc_words_file = Path(data["qpc_words_file"])
+            self.qpc_words_file = _resolve_path(data["qpc_words_file"], self.base_dir)
         if "quran_metadata_file" in data:
-            self.quran_metadata_file = Path(data["quran_metadata_file"])
+            self.quran_metadata_file = _resolve_path(data["quran_metadata_file"], self.base_dir)
+        if "spans_embeddings_path" in data:
+            self.spans_embeddings_path = data["spans_embeddings_path"]
         
         if "lafzize" in data:
             self.lafzize = LafzizeConfig.from_dict(data["lafzize"])

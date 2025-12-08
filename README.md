@@ -22,7 +22,7 @@ Open the Colab notebook and run it there: [quran_segmenter_colab.ipynb](notebook
 **Fast start (English demo):**
 - Use the provided pre-segmented translation at `example/en-sahih-international-simple.json`.
 - Download embeddings from the Hugging Face dataset (contains `spans.npz` and `en-sahih-international-simple.npz`): `git clone https://huggingface.co/datasets/rehandaphedar/rabtize ./quran_data/embeddings`.
-- Register with `translation_id=en-sahih-international-simple` and point to those two `.npz` files to skip LLM segmentation.
+- Register with `translation_id=en-sahih-international-simple` and set `--spans-embeddings-filepath ./quran_data/embeddings/spans.npz` and `--segment-embeddings-filepath ./quran_data/embeddings/en-sahih-international-simple.npz` to skip LLM segmentation.
 
 **New language:**
 - Bring a translation JSON, register it with `quran-segmenter register`, then run `quran-segmenter prepare <translation_id>` (requires `GEMINI_API_KEY`) to generate segments and embeddings.
