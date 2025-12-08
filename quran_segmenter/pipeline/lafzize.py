@@ -65,12 +65,17 @@ class LafzizeProcessor:
                 return [WordTimestamp.from_dict(t) for t in cached]
         
         # Start server if needed
+        start_failed_log = ""
         if start_server:
-            self.server.start()
+            started = self.server.start()
+            if not started:
+                start_failed_log = self.server.get_log()
 
         # Ensure server is running
         if not self.ensure_server():
-            raise ServerNotRunningError("Could not start lafzize server")
+            log_excerpt = self.server.get_log() or start_failed_log
+            extra = f"\nServer log (tail):\n{log_excerpt}" if log_excerpt else ""
+            raise ServerNotRunningError(f"Could not start lafzize server{extra}")
         
         # Call lafzize API
         logger.info(f"Calling lafzize for {audio_path.name} verses {verse_range_str}")
