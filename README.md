@@ -19,6 +19,14 @@ Open the Colab notebook and run it there: [quran_segmenter_colab.ipynb](notebook
 - [`quran-metadata-misc.json`](https://git.sr.ht/~rehandaphedar/quranic-universal-library-extras/blob/main/quran-metadata-misc.json) (metadata)
 - Your recitation audio as an `.mp3` (found in the reciter JSONs downloadable from https://qul.tarteel.ai/resources/recitation)
 
+**Fast start (English demo):**
+- Use the provided pre-segmented translation at `example/en-sahih-international-simple.json`.
+- Download embeddings from the Hugging Face dataset (contains `spans.npz` and `en-sahih-international-simple.npz`): `git clone https://huggingface.co/datasets/rehandaphedar/rabtize ./quran_data/embeddings`.
+- Register with `translation_id=en-sahih-international-simple` and point to those two `.npz` files to skip LLM segmentation.
+
+**New language:**
+- Bring a translation JSON, register it with `quran-segmenter register`, then run `quran-segmenter prepare <translation_id>` (requires `GEMINI_API_KEY`) to generate segments and embeddings.
+
 ## Required Files
 
 Before using the tool, you need these data files:
