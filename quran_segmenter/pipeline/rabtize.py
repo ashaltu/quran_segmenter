@@ -44,7 +44,6 @@ class RabtizeProcessor:
         cmd = [
             sys.executable,
             "-m", "rabtize.main",
-            f"--words=qpc-hafs-word-by-word.json",
         ] + args
         
         logger.info(f"Running: {' '.join(cmd)}")
@@ -121,6 +120,7 @@ class RabtizeProcessor:
             shutil.copy(translation_file, trans_dst)
         
         args = [
+            f"--words={self.config.qpc_words_file.name}",
             f"--translation={trans_name}",
             "embed", "spans",
             str(output_path),
@@ -131,7 +131,7 @@ class RabtizeProcessor:
         
         print("\n" + "=" * 60)
         print("GENERATING SPANS EMBEDDINGS")
-        print("This is a one-time operation that takes 1-2 hours on GPU.")
+        print("This is a one-time operation that takes <45 minutes on a free Colab GPU (as Dec. '25)")
         print("The embeddings will be reused for all translations.")
         print("=" * 60)
         
@@ -186,6 +186,7 @@ class RabtizeProcessor:
         shutil.copy(segmented_path, trans_dst)
         
         args = [
+            f"--words={self.config.qpc_words_file.name}",
             f"--translation={trans_name}",
             "embed", "segments",
             str(output_path),
@@ -250,6 +251,7 @@ class RabtizeProcessor:
         output_path = self.config.cache_dir / f"align_{translation_id}_{verse_range_str.replace(':', '_').replace('-', '_')}.json"
         
         args = [
+            f"--words={self.config.qpc_words_file.name}",
             f"--translation={trans_name}",
             "align",
             f"-sp={self.config.spans_embeddings_path}",
