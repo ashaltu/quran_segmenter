@@ -219,7 +219,8 @@ class QuranSegmenterPipeline:
         verses: str,
         translation_id: str,
         output_path: Optional[Path] = None,
-        use_cache: bool = True
+        use_cache: bool = True,
+        start_server: bool = True
     ) -> ProcessingResult:
         """
         Process audio and generate timed segments.
@@ -230,6 +231,7 @@ class QuranSegmenterPipeline:
             translation_id: ID of prepared translation
             output_path: Optional path to save result
             use_cache: Whether to use cached intermediate results
+            start_server: Whether to start the lafzize server automatically
             
         Returns:
             ProcessingResult with timed segments
@@ -253,7 +255,7 @@ class QuranSegmenterPipeline:
             audio_path=audio_path,
             verse_range=verse_range,
             use_cache=use_cache,
-            start_server=True
+            start_server=start_server
         )
         
         # Step 2: Get alignment
