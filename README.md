@@ -1,5 +1,7 @@
 # Quran Segmenter
 
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ashaltu/quran_segmenter/blob/main/notebooks/quran_segmenter_colab.ipynb)
+
 A production-grade tool for generating timed subtitle segments for Quran video recitations. Splits verses into readable segments with synchronized Arabic text and translations.
 
 ## Features
