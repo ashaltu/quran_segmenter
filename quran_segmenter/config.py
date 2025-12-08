@@ -252,6 +252,9 @@ class Config:
         Does NOT overwrite existing config.
         """
         data_dir = Path(data_dir)
+        # Allow callers to pass either a data directory or a full config path
+        if data_dir.suffix == ".json":
+            data_dir = data_dir.parent
         config_path = data_dir / "config.json"
         
         config = cls(
@@ -422,6 +425,11 @@ class Config:
         print("=" * 60 + "\n")
 
 def get_config() -> Config:
-    """Get the global configuration instance."""
-    config_path = Path(os.environ.get("QURAN_SEGMENTER_CONFIG", "./quran_data/config.json"))
+    """
+    Get the global configuration instance.
+    
+    QURAN_SEGMENTER_CONFIG should point directly to the config JSON file.
+    """
+    env_path = os.environ.get("QURAN_SEGMENTER_CONFIG")
+    config_path = Path(env_path).expanduser() if env_path else Path("./quran_data/config.json")
     return Config.load_or_create(config_path)
