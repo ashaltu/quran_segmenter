@@ -129,6 +129,13 @@ Make sure Google Drive is mounted and you ran the initialization cell.
 ### LLM segmentation fails
 Some verses may need higher model settings. The tool will report which verses failed.
 
+## Credits
+
+This project integrates three tools built by Rehan Daphedar:
+- [lafzize](https://sr.ht/~rehandaphedar/lafzize/) — audio-to-word timestamping
+- [rabtize](https://sr.ht/~rehandaphedar/rabtize/) — embedding generation and alignment
+- [jumlize](https://sr.ht/~rehandaphedar/jumlize/) — LLM-based translation segmentation
+
 ## License
 
 MIT
