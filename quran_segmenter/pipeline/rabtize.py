@@ -234,12 +234,27 @@ class RabtizeProcessor:
         
         # Check cache
         if use_cache:
+            # If a full alignment is cached, reuse it and filter to the requested range.
+            if verse_range:
+                cached_all = self.cache.get_cached_alignment(translation_id, "all")
+                if cached_all:
+                    logger.info(
+                        f"Using cached alignment for {translation_id} (all) -> {verse_range_str}"
+                    )
+                    verse_keys = set(verse_range.verse_keys())
+                    return {k: v for k, v in cached_all.items() if k in verse_keys}
+
             cached = self.cache.get_cached_alignment(translation_id, verse_range_str)
             if cached:
                 logger.info(f"Using cached alignment for {translation_id} {verse_range_str}")
                 return cached
         
         logger.info(f"Running alignment for {translation_id}...")
+        
+        # If a verse range was requested, prefer generating the full alignment once
+        # and slicing it; this avoids N per-verse runs that all produce the same file.
+        run_full = verse_range is None or (use_cache and verse_range)
+        run_range_str = "all" if run_full else verse_range_str
         
         # Copy files to rabtize dir
         import shutil
@@ -248,7 +263,7 @@ class RabtizeProcessor:
         trans_dst = self.config.rabtize_dir / trans_name
         shutil.copy(segmented_path, trans_dst)
         
-        output_path = self.config.cache_dir / f"align_{translation_id}_{verse_range_str.replace(':', '_').replace('-', '_')}.json"
+        output_path = self.config.cache_dir / f"align_{translation_id}_{run_range_str.replace(':', '_').replace('-', '_')}.json"
         
         args = [
             f"--words={self.config.qpc_words_file.name}",
@@ -267,14 +282,17 @@ class RabtizeProcessor:
         with open(output_path, "r", encoding="utf-8") as f:
             alignment = json.load(f)
         
+        # Cache result
+        if use_cache:
+            if run_range_str == "all":
+                self.cache.cache_alignment(translation_id, "all", alignment)
+            else:
+                self.cache.cache_alignment(translation_id, verse_range_str, alignment)
+        
         # Filter to verse range if specified
         if verse_range:
             verse_keys = set(verse_range.verse_keys())
             alignment = {k: v for k, v in alignment.items() if k in verse_keys}
-        
-        # Cache result
-        if use_cache:
-            self.cache.cache_alignment(translation_id, verse_range_str, alignment)
         
         logger.info(f"✓ Alignment complete: {len(alignment)} verses")
         return alignment
