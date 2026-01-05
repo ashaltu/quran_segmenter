@@ -4,6 +4,11 @@
 
 A WIP tool for generating timed subtitle segments for Quran video recitations. Splits verses into readable segments with synchronized Arabic text and translations.
 
+<p align="center">
+  <strong>⚠️ USE THE COLAB NOTEBOOK TO GET STARTED. This project is in a semi-active developmental state (open to collaboration and resolving bugs if I have time). Expect frequent breaking changes. It shouldn't be depended on for production. </strong>
+</p>
+
+
 ## Features
 
 - **Multi-language support**: Works with any translation
